@@ -14,6 +14,7 @@ func main() {
 	// Do I **need** to instantiate each one?
 	var commands = map[string]Commander{
 		"scaffold": new(ScaffoldCommand),
+		"serve":    new(ServeCommand),
 	}
 
 	flag.Parse()
