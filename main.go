@@ -5,12 +5,16 @@ import (
 	"log"
 )
 
-type Executer interface {
+type Commander interface {
 	Execute([]string) error
 }
 
 func main() {
-	var executer Executer
+	// TODO: How to reference a specific type?
+	// Do I **need** to instantiate each one?
+	var commands = map[string]Commander{
+		"scaffold": new(ScaffoldCommand),
+	}
 
 	flag.Parse()
 	arguments := flag.Args()
@@ -20,18 +24,12 @@ func main() {
 		log.Fatalln("A command must be provided.")
 	}
 
-	command := arguments[0]
+	commandName := arguments[0]
+	command, ok := commands[commandName]
 
-	switch command {
-	case "scaffold":
-		executer = new(ScaffoldCommand)
-
-	case "serve":
-		executer = new(ServeCommand)
-
-	default:
-		log.Fatalln("Invalid command:", command)
+	if ok == false {
+		log.Fatalln(commandName, "is not a valid command.")
 	}
 
-	executer.Execute(arguments[1:])
+	command.Execute(arguments[1:])
 }
